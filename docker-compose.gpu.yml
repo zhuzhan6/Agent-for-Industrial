@@ -1,0 +1,17 @@
+# ============================================================
+# Docker Compose GPU 覆盖配置
+# 使用方式: docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# 前置条件: 宿主机需安装 nvidia-container-toolkit
+# ============================================================
+
+services:
+  backend:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - EMBEDDING_DEVICE=cuda

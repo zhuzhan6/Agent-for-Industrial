@@ -1,0 +1,42 @@
+# ============================================================
+# 多智能体工业排障 RAG 系统 - 前端服务
+# 多阶段构建: Node.js 构建 → Nginx 静态服务
+# ============================================================
+
+# ---------- 阶段 1: 构建 ----------
+FROM docker.1ms.run/library/node:22-alpine AS builder
+
+WORKDIR /app
+
+# 安装依赖
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci --prefer-offline 2>/dev/null || npm install
+
+# 复制前端源码
+COPY frontend/ .
+
+# 构建生产版本
+RUN npm run build
+
+# ---------- 阶段 2: 运行 ----------
+FROM docker.1ms.run/library/nginx:alpine
+
+LABEL maintainer="user"
+LABEL description="Multi-Agent Industrial Troubleshooting RAG - Frontend"
+
+# 复制 Nginx 配置
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# 复制前端构建产物
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# 复制诊断图片（静态资源）
+COPY images/ /usr/share/nginx/html/static/
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -qO- http://localhost:80/ || exit 1
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

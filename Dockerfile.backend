@@ -1,0 +1,53 @@
+# ============================================================
+# 多智能体工业排障 RAG 系统 - 后端服务
+# ============================================================
+FROM docker.1ms.run/library/python:3.11-slim
+
+LABEL maintainer="user"
+LABEL description="Multi-Agent Industrial Troubleshooting RAG - Backend"
+
+# 设置为 UTF-8 避免中文编码问题
+ENV PYTHONUTF8=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Python 依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制源代码
+COPY main.py ingest.py ./
+COPY agents/ ./agents/
+COPY api/ ./api/
+COPY config/ ./config/
+COPY rag/ ./rag/
+COPY models/ ./models/
+COPY cache/ ./cache/
+COPY iot/ ./iot/
+COPY maintenance/ ./maintenance/
+COPY validation/ ./validation/
+
+# 复制知识库 Markdown 源文件
+COPY *.md ./
+
+# 复制诊断图片
+COPY images/ ./images/
+
+# 模型目录声明为卷（运行时挂载宿主机 models/）
+VOLUME ["/app/models"]
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/api/health || exit 1
+
+EXPOSE 8000
+
+# 启动命令
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]

@@ -1,0 +1,52 @@
+# Web Framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# LlamaIndex (RAG 管道)
+llama-index-core>=0.12.0
+llama-index-embeddings-huggingface>=0.4.0
+llama-index-vector-stores-qdrant>=0.6.0
+llama-index-postprocessor-flag-embedding-reranker>=0.3.0
+llama-index-readers-file>=0.4.0
+
+# LangGraph (多智能体编排)
+langgraph>=0.2.0
+langchain-openai>=0.2.0
+langchain-core>=0.3.0
+
+# LLM Client
+openai>=1.50.0
+
+# Qdrant
+qdrant-client>=1.12.0
+
+# Embedding & Reranker
+FlagEmbedding>=1.1.0
+torch>=2.0.0
+transformers>=4.35.0
+sentence-transformers>=3.0.0
+
+# Data Models & Config
+pydantic>=2.9.0
+pydantic-settings>=2.5.0
+
+# BM25 Retrieval
+rank_bm25>=0.2.2
+
+# Redis (Session Management)
+redis>=5.0.0
+
+# Logging
+python-json-logger>=3.0.0
+
+# Rate Limiting
+slowapi>=0.1.9
+
+# SSE Streaming
+sse-starlette>=2.0.0
+
+# Retry
+tenacity>=8.2.0
+
+# Utilities
+python-dotenv>=1.0.0

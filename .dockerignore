@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Models (挂载宿主机目录，不打包进镜像；但保留 Python 源码）
+models/BAAI/
+
+# Data persistence
+qdrant_data/
+redis_data/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Frontend build artifacts
+frontend/dist/
+frontend/node_modules/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+nginx.conf.backup
